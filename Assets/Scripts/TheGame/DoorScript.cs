@@ -17,37 +17,38 @@ public class DoorScript : MonoBehaviour
     PlayerScript _playerScript;
     KeypadScript _keypadScript;
     bool _isInRadius;
-    string _keypadText;
+    string _code;
 
     void Start() { 
         _sceneLoaderScript = GameObject.Find("SceneLoader").GetComponent<SceneLoaderScript>();
         _playerScript = GameObject.Find("/Player").GetComponent<PlayerScript>();
         _keypadScript = GameObject.Find("/Canvas").transform.Find("Keypad").GetComponent<KeypadScript>();
-        // eventManagerScript = GameObject.Find("EventManager").GetComponent<EventManagerScript>();
-        // audioScript = GameObject.Find("Audio").GetComponent<AudioScript>();
         _guide.gameObject.SetActive(false);
         _roomLabel.text = _roomName.Replace("Room", "");
         _renderer.sprite = _hasKeypad ? _keypadDoor : _normalDoor;
+        _code = _hasKeypad ? "123456789" : "";
     }
 
     void Update() {
         if (Input.GetKeyUp(KeyCode.E) && _isInRadius) { 
-            if (_hasKeypad) { _keypadScript.ToggleKeypad(true); }
+            if (_hasKeypad) { 
+                _keypadScript.SetTargetRoom(_roomName);
+                _keypadScript.ToggleKeypad(true); 
+            }
             else { ToggleRoom(); }  
         }
     }
 
     public void ToggleRoom() {
-        // bool status = eventManagerScript.CheckEvent(transform);
-
-        // if (status) {
-            // StorePlayerState();
-            _sceneLoaderScript.LoadScene(_roomName);
-
-            // if (transform.GetComponent<SpriteRenderer>().sprite != null) {
-            //     audioScript.PlayAudio(null, "door_opening");
-            // }
-        // }
+        if (_sceneLoaderScript.GetSceneName().Equals("Hallway")) {
+            PlayerPrefs.SetInt("reset_player_post", 0);
+            PlayerPrefs.SetString("prev_scene", _sceneLoaderScript.GetSceneName());
+            PlayerPrefs.SetFloat("prev_player_x", _playerScript.transform.position.x);
+            PlayerPrefs.SetFloat("prev_player_y", _playerScript.transform.position.y);
+        }
+        else { PlayerPrefs.SetInt("reset_player_post", 1); }
+        
+        _sceneLoaderScript.LoadScene(_roomName);
     }
 
     void OnTriggerEnter2D(Collider2D col){

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class PlayerScript : MonoBehaviour {
     [SerializeField] Rigidbody2D rbody;
@@ -21,14 +22,7 @@ public class PlayerScript : MonoBehaviour {
     void Start() { 
         sceneLoaderScript = GameObject.Find("/SceneLoader").GetComponent<SceneLoaderScript>();
 
-        // eventManagerScript = GameObject.Find("EventManager").GetComponent<EventManagerScript>();
-        // audioScript = GameObject.Find("Audio").GetComponent<AudioScript>();
-        // uiScript = GameObject.Find("UI").GetComponent<UIScript>();
-
-        // if (PlayerPrefs.HasKey("player_topless")) { 
-        //     topless = PlayerPrefs.GetInt("player_topless") == 1; 
-        // }
-        
+        ResetInitPost();
     }
 
     // Update is called once per frame
@@ -71,6 +65,7 @@ public class PlayerScript : MonoBehaviour {
                   y = PlayerPrefs.GetFloat("prev_player_y");
                   
             transform.position = new Vector2(x, y);
+            PlayerPrefs.DeleteKey("reset_player_post");
         }
     }
 

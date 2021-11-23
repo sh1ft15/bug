@@ -8,4 +8,22 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PongCombatSys.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Hallway.unity
+    guid: 0f8098205b08d95488f97c8bcd95ca0a
+  - enabled: 1
+    path: Assets/Scenes/Room101.unity
+    guid: ed1f1050e5d4b454aad39e018a032298
+  - enabled: 1
+    path: Assets/Scenes/Room102.unity
+    guid: 6153926009f0dbb43be4542e67ca348b
+  - enabled: 1
+    path: Assets/Scenes/Room103.unity
+    guid: 47c1ef24791e079448cedaf7d6f4e48c
+  - enabled: 1
+    path: Assets/Scenes/Room104.unity
+    guid: bd6cdaac8224fa041a89e973aee49d47
+  - enabled: 1
+    path: Assets/Scenes/Room105.unity
+    guid: 474af17fc45cc7745abe5273de14749c
   m_configObjects: {}

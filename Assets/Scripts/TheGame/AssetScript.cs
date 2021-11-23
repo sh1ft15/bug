@@ -33,6 +33,7 @@ public class AssetScript : MonoBehaviour
                 case "Player": 
                 _isInRadius = true;
                 _guide.gameObject.SetActive(true); 
+                CheckFixed();
                 break;
             }
         }
@@ -51,11 +52,27 @@ public class AssetScript : MonoBehaviour
     }
 
     void ToggleCombatSystem(){
-        PlayerPrefs.SetString("start_character", "testbot");
-        PlayerPrefs.SetString("end_character", character.name);
-        PlayerPrefs.SetString("prev_scene", _sceneLoaderScript.GetSceneName());
-        PlayerPrefs.SetFloat("prev_player_x", _player.transform.position.x);
-        PlayerPrefs.SetFloat("prev_player_y", _player.transform.position.y);
-        _sceneLoaderScript.LoadScene("PongCombatSys");
+        if (_bugged) {
+            PlayerPrefs.SetString("start_character", "testbot");
+            PlayerPrefs.SetString("end_character", character.name);
+            PlayerPrefs.SetString("prev_scene", _sceneLoaderScript.GetSceneName());
+            PlayerPrefs.SetFloat("prev_player_x", _player.transform.position.x);
+            PlayerPrefs.SetFloat("prev_player_y", _player.transform.position.y);
+            _sceneLoaderScript.LoadScene("PongCombatSys");
+        }
+    }
+
+    public void SetBugged(bool status){
+        _bugged = status;
+        _animator.SetBool("bugged", _bugged);
+
+        if (!_bugged && _guide.gameObject.activeSelf) { _guide.gameObject.SetActive(false); }
+    }
+
+    public void CheckFixed(){
+        bool playerWin = PlayerPrefs.GetInt("prev_combat_result") > 0;
+
+        SetBugged(!playerWin);
+        PlayerPrefs.DeleteKey("prev_combat_result");
     }
 }

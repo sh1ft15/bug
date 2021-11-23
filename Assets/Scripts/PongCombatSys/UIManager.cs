@@ -224,16 +224,16 @@ public class UIManager : MonoBehaviour
         Transform image = _healthBar.Find("BlueBar");
         Vector2 scale = image.localScale;
         Text numLabel = _healthBar.Find("Num").GetComponent<Text>();
+        bool playerWin;
 
         _blueHealth = Mathf.Max(Mathf.Min(_blueHealth + num, _maxHealth), 0);
         _redHealth = Mathf.Max(_maxHealth - _blueHealth, 0);
         scale.x = _blueHealth / _maxHealth;
         image.localScale = scale;
         numLabel.text = _blueHealth.ToString("0") + " : " + _redHealth.ToString("0");
+        playerWin = _blueHealth >= _maxHealth;
 
-        if (_blueHealth <= 0 || _blueHealth >= _maxHealth) {
-            TogglePrevScene();
-        }
+        if (_blueHealth <= 0 || playerWin) { TogglePrevScene(playerWin); }
     }
 
     public void ResetHealth(float num = 0){
@@ -277,58 +277,17 @@ public class UIManager : MonoBehaviour
         else { obj.Find("Label").gameObject.SetActive(false); }
     }
 
-    void TogglePrevScene(){
+    void TogglePrevScene(bool status){
+        // if win, unlock fragment of the door code
+        if (status) {
+            int codeIndex = PlayerPrefs.GetInt("room_code_index");
+
+            codeIndex = Mathf.Min(codeIndex + 2, 10);
+            PlayerPrefs.SetInt("room_code_index", codeIndex);
+        }
+        
+        PlayerPrefs.SetInt("prev_combat_result", status ? 1 : 0);
         PlayerPrefs.SetInt("reset_player_post", 1);
         _sceneLoaderScript.LoadScene(PlayerPrefs.GetString("prev_scene"));
     }
 }
-
-// public void IterateGoal(Goal goal, bool? status = null) {
-//     int goalIndex = _goals.IndexOf(goal),
-//         nextIndex = goalIndex + 1;
-
-//     if (status == null) {
-//         float rate = goal.GetHost().Equals("start") ? _blueHealth : _redHealth;
-        
-//         status = Mathf.Abs(goal.GetRate() - rate) <= 0.1f;
-//     }
-
-//     goal.SetRateColor((bool) status ? Color.green : Color.red);
-//     goal.ToggleActive(false);
-    
-//     if (nextIndex < _goals.Count && _goals[nextIndex].gameObject.activeSelf) {
-//         _activeGoal = _goals[nextIndex];
-//         _goals[nextIndex].ToggleActive(true);
-//         ResetHealth();
-//     }
-//     else { _ballManager.RemoveAllBall(); }
-// }
-
-// public void CheckActiveGoal(){
-//     if (_activeGoal != null) {
-//         float rate = _activeGoal.GetHost().Equals("start") ? _blueHealth : _redHealth;
-//         int goalIndex = _goals.IndexOf(_activeGoal);
-
-//         if (Mathf.Abs(_activeGoal.GetRate() - rate) <= 0.1f) { IterateGoal(_activeGoal); }
-//     }
-// }
-
-// public void SetupGoals(){
-//     _activeGoal = _goals[0];
-
-//     for(int i = 0; i < _goals.Count; i++){
-//         Goal goal = _goals[i];
-
-//         if (i < _goalMax) {
-//             if (!goal.gameObject.activeSelf) { goal.gameObject.SetActive(false); }
-//             float randRate = Random.value <= .5f ? Random.Range(1, 4) : Random.Range(6, 9);
-
-//             goal.SetHost(Random.value <= .5f ? "start" : "end");
-//             goal.SetRate(Mathf.RoundToInt(randRate) * 10);
-//             goal.SetRateColor(Color.white);
-//             goal.SetTimeLimit(60);
-//             goal.ToggleActive(i == 0);
-//         }
-//         else { goal.gameObject.SetActive(false); }
-//     }
-// }

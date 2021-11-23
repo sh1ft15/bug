@@ -7,6 +7,7 @@ TagManager:
   - Ball
   - Tile
   - Door
+  - DontDestroy
   layers:
   - Default
   - TransparentFX
