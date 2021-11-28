@@ -4159,6 +4159,18 @@ PrefabInstance:
       propertyPath: _assetName
       value: trashcan
       objectReference: {fileID: 0}
+    - target: {fileID: 8445896040099869083, guid: d1cb4ec2362c30a4883eff6e47a390ef, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8445896040099869083, guid: d1cb4ec2362c30a4883eff6e47a390ef, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8445896040099869083, guid: d1cb4ec2362c30a4883eff6e47a390ef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
     - target: {fileID: 8445896040566621544, guid: d1cb4ec2362c30a4883eff6e47a390ef, type: 3}
       propertyPath: m_RootOrder
       value: 11

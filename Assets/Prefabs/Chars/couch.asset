@@ -15,7 +15,7 @@ MonoBehaviour:
   sprite: {fileID: -2004083991392389915, guid: 3f778266b5b8d88449014840390419d4, type: 3}
   charName: Uncle Couch
   spriteDir: 0
-  gridWidth: 5
+  gridWidth: 7
   gridHeight: 5
   hosts:
   - {fileID: 11400000, guid: 6a78b2cfcca688644ae8fbcd316d7b07, type: 2}

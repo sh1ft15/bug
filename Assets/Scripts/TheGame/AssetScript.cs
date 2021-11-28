@@ -39,7 +39,7 @@ public class AssetScript : MonoBehaviour
     }
 
     void Update() {
-        if (Input.GetKeyUp(KeyCode.E) && _isInRadius) { 
+        if (Input.GetKeyUp(KeyCode.E) && !_dialogScript.DialogIsShown() && _isInRadius) { 
             ToggleCombatSystem();
         }
     }
@@ -101,6 +101,9 @@ public class AssetScript : MonoBehaviour
 
             if (character.name.Equals("bug")) { 
                 PlayerPrefs.SetInt(character.name + "_has_been_fixed", combatResult);
+            }
+            else if (character.name.Equals("player") && playerWin) {
+                _sceneLoaderScript.LoadScene("GameOver");
             }
         }
     }

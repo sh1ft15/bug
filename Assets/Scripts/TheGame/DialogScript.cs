@@ -49,7 +49,11 @@ public class DialogScript : MonoBehaviour
         };
         _dialogScripts["bug"] = new List<string>(){
             "'The Bug' is supposedly to be the 'origin' of the bugged assets. Moving away from the player view from time to time and leaving along the bugged assets.",
-            "However, the idea is quickly scraped as it's taking to much time to just finish the game. Now it just act as any other bugged assets."
+            "However, the idea is quickly scraped off as it's taking to much time to just finish the game. Now it just act as any other bugged assets."
+        };
+        _dialogScripts["player"] = new List<string>(){
+            "I envisioned 'The Player' to be the final antagonist where it will try to take over the game.",
+            "This idea is also being abandoned because I got no clue how to do it."
         };
 
         _seenScripts = new Dictionary<string, bool>();
@@ -124,6 +128,8 @@ public class DialogScript : MonoBehaviour
         
         _dialogText.text = GetPageLabel() + _scriptTexts[_curIndex];
     }
+
+    public bool DialogIsShown() { return _dialogIsShown; }
 
     void TriggerTypeText(string str){
         if (_typeTextCoroutine != null) { StopCoroutine(_typeTextCoroutine); }
