@@ -14,5 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprite: {fileID: 5624863633686145827, guid: 3f778266b5b8d88449014840390419d4, type: 3}
   charName: Door-san
+  spriteDir: 0
+  gridWidth: 6
+  gridHeight: 8
   hosts:
   - {fileID: 11400000, guid: c14b003d24e2ac047abd1110ca771a6e, type: 2}
+  - {fileID: 11400000, guid: 6a78b2cfcca688644ae8fbcd316d7b07, type: 2}

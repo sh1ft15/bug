@@ -12,16 +12,14 @@ public class PlayerScript : MonoBehaviour {
     SceneLoaderScript sceneLoaderScript;
     Vector2 direction;
     bool _moveLocked, facingRight = true;
-
-    // EventManagerScript eventManagerScript;
-    // AudioScript audioScript;
+    AudioScript audioScript;
     // UIScript uiScript;
     List<Sprite> items;
     Coroutine footstepCoroutine;
     
     void Start() { 
         sceneLoaderScript = GameObject.Find("/SceneLoader").GetComponent<SceneLoaderScript>();
-
+        audioScript = GameObject.Find("/Audio").GetComponent<AudioScript>();
         ResetInitPost();
     }
 
@@ -45,9 +43,9 @@ public class PlayerScript : MonoBehaviour {
 
         animator.SetFloat("horizontal", num);
 
-        // if (num > 0 && footstepCoroutine == null) {
-        //     footstepCoroutine = StartCoroutine(CycleFootStep());
-        // }
+        if (num > 0 && footstepCoroutine == null) {
+            footstepCoroutine = StartCoroutine(CycleFootStep());
+        }
     }
 
     void Flip() {
@@ -57,21 +55,23 @@ public class PlayerScript : MonoBehaviour {
 
     public void LockMovement(bool status) {
         _moveLocked = status;
+        direction = Vector2.zero;
     }
 
     void ResetInitPost(){
         if (PlayerPrefs.GetInt("reset_player_post") > 0) {
-            float x = PlayerPrefs.GetFloat("prev_player_x"),
-                  y = PlayerPrefs.GetFloat("prev_player_y");
+            string sceneName = sceneLoaderScript.GetSceneName();
+            float x = PlayerPrefs.GetFloat(sceneName + "_prev_player_x"),
+                  y = PlayerPrefs.GetFloat(sceneName + "_prev_player_y");
                   
             transform.position = new Vector2(x, y);
             PlayerPrefs.DeleteKey("reset_player_post");
         }
     }
 
-    // IEnumerator CycleFootStep(){
-    //     audioScript.PlayAudio(transform.GetComponent<AudioSource>(), "footstep");
-    //     yield return new WaitForSeconds(0.3f);
-    //     footstepCoroutine = null;
-    // }
+    IEnumerator CycleFootStep(){
+        audioScript.PlayAudio(transform.GetComponent<AudioSource>(), "footstep");
+        yield return new WaitForSeconds(0.3f);
+        footstepCoroutine = null;
+    }
 }

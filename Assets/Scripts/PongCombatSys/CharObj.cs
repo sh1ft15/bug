@@ -7,6 +7,6 @@ using UnityEngine;
 public class CharObj : ScriptableObject {
     public Sprite sprite;
     public string charName;
-    public int spriteDir;
+    public int spriteDir, gridWidth, gridHeight;
     public List<HostObj> hosts;
 }

@@ -13,7 +13,7 @@ public class DoorScript : MonoBehaviour
     [SerializeField] bool _hasKeypad;
     SceneLoaderScript _sceneLoaderScript;
     // EventManagerScript eventManagerScript;
-    // AudioScript audioScript;
+    AudioScript _audioScript;
     PlayerScript _playerScript;
     KeypadScript _keypadScript;
     bool _isInRadius;
@@ -22,6 +22,7 @@ public class DoorScript : MonoBehaviour
     void Start() { 
         _sceneLoaderScript = GameObject.Find("SceneLoader").GetComponent<SceneLoaderScript>();
         _playerScript = GameObject.Find("/Player").GetComponent<PlayerScript>();
+        _audioScript = GameObject.Find("/Audio").GetComponent<AudioScript>();
         _keypadScript = GameObject.Find("/Canvas").transform.Find("Keypad").GetComponent<KeypadScript>();
         _guide.gameObject.SetActive(false);
         _roomLabel.text = _roomName.Replace("Room", "");
@@ -41,13 +42,16 @@ public class DoorScript : MonoBehaviour
 
     public void ToggleRoom() {
         if (_sceneLoaderScript.GetSceneName().Equals("Hallway")) {
+            string sceneName = _sceneLoaderScript.GetSceneName();
+
             PlayerPrefs.SetInt("reset_player_post", 0);
-            PlayerPrefs.SetString("prev_scene", _sceneLoaderScript.GetSceneName());
-            PlayerPrefs.SetFloat("prev_player_x", _playerScript.transform.position.x);
-            PlayerPrefs.SetFloat("prev_player_y", _playerScript.transform.position.y);
+            PlayerPrefs.SetString("prev_scene", sceneName);
+            PlayerPrefs.SetFloat(sceneName + "_prev_player_x", _playerScript.transform.position.x);
+            PlayerPrefs.SetFloat(sceneName + "_prev_player_y", _playerScript.transform.position.y);
         }
         else { PlayerPrefs.SetInt("reset_player_post", 1); }
         
+        _audioScript.PlayAudio(transform.GetComponent<AudioSource>(), "door_opening");
         _sceneLoaderScript.LoadScene(_roomName);
     }
 

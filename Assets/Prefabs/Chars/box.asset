@@ -14,5 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprite: {fileID: 5716808324816200745, guid: 3f778266b5b8d88449014840390419d4, type: 3}
   charName: Boxer
+  spriteDir: 0
+  gridWidth: 10
+  gridHeight: 3
   hosts:
-  - {fileID: 11400000, guid: 628bf4fdcae894c46a0f5c23bfc93b18, type: 2}
+  - {fileID: 11400000, guid: c14b003d24e2ac047abd1110ca771a6e, type: 2}
+  - {fileID: 11400000, guid: ae686307deb20c4428043c9bea5fcdd5, type: 2}

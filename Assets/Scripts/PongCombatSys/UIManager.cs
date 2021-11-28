@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour
     GridManager _gridManager;
     BallManager _ballManager;
     SceneLoaderScript _sceneLoaderScript;
+    AudioScript _audioScript;
     EnemyAI _enemyAI;
     Collider2D _objOnCursor;
     Coroutine _iterateCurrentTileCoroutine;
@@ -23,14 +24,16 @@ public class UIManager : MonoBehaviour
 
     void Start() {
         _sceneLoaderScript = GameObject.Find("SceneLoader").GetComponent<SceneLoaderScript>();
+        _audioScript = GameObject.Find("/Audio").GetComponent<AudioScript>();
         _gridManager = GameObject.Find("/GridManager").GetComponent<GridManager>();
         _ballManager = GameObject.Find("/BallManager").GetComponent<BallManager>();
         _enemyAI = GameObject.Find("/EnemyAI").GetComponent<EnemyAI>();
         _playerTurn = true;
-        _turnTimeLimit = 30;
+        _turnTimeLimit = 0;
         _timeLimitText.enabled = false;
         _enemyAI.SetExists(true);
 
+        _audioScript.PlayMusic("bgm");
         UpdateTurn(true);
         UpdateHealth(_maxHealth / 2);
     }
@@ -86,13 +89,15 @@ public class UIManager : MonoBehaviour
                                         _gridManager.AddSpecialTile(targetTile);
                                         _gridManager.RemoveSpecialTile(originTile);
                                         _gridManager.MoveCurSpecialTileOnPath();
+                                        _audioScript.PlayAudio(transform.GetComponent<AudioSource>(), "place_tile");
                                         UpdateTurn();
                                     }
                                     // add warning here
-                                    else { }
+                                    else { _audioScript.PlayAudio(transform.GetComponent<AudioSource>(), "cannot_place_tile"); }
                                 }
                                 else if (_gridManager.IsFirstTile(tile) && !_ballManager.HasBall()) { 
                                     _ballManager.SpawnBall(_gridManager.GetMainTiles()); 
+                                    _audioScript.PlayAudio(transform.GetComponent<AudioSource>(), "place_tile");
                                     UpdateTurn();
                                 }
                             }
@@ -103,7 +108,11 @@ public class UIManager : MonoBehaviour
                 _tileCursor.ToggleCursor(false);
             }
         }
-        else { if (_tileCursor.gameObject.activeSelf) { _tileCursor.ToggleCursor(false); } }
+        else { 
+            if (_tileCursor.gameObject.activeSelf) { _tileCursor.ToggleCursor(false); }
+
+            if (Input.GetMouseButtonUp(0)) { _audioScript.PlayAudio(transform.GetComponent<AudioSource>(), "cannot_place_tile"); }  
+        }
     }
 
     Collider2D GetObjectOnMouse(){
@@ -214,7 +223,7 @@ public class UIManager : MonoBehaviour
             _curTurn.Find("RArrow").gameObject.SetActive(!_playerTurn);
         }
 
-        _turnTimeLimit = init ? 30 : 6;
+        _turnTimeLimit = init ? 1800 : 6;
         _turnTimeLimitText.color = _playerTurn ? Color.blue : Color.red;
 
         if (!_playerTurn) { _enemyAI.TriggerAction(); }
@@ -273,21 +282,30 @@ public class UIManager : MonoBehaviour
 
             image.sprite = charObj.sprite;
             image.transform.rotation = Quaternion.Euler(0, charObj.spriteDir >= 0 ? 0 : 180, 0);
+
+            // temp fix for bug character face not showing
+            if (charObj.name.Equals("bug")) {
+                Vector2 post = obj.Find("Object").transform.position;
+
+                post.y += 130;
+                obj.Find("Object").transform.position = post;
+            }
         }
         else { obj.Find("Label").gameObject.SetActive(false); }
     }
 
-    void TogglePrevScene(bool status){
+    public void TogglePrevScene(bool status){
         // if win, unlock fragment of the door code
         if (status) {
             int codeIndex = PlayerPrefs.GetInt("room_code_index");
 
-            codeIndex = Mathf.Min(codeIndex + 2, 10);
+            codeIndex = Mathf.Min(codeIndex + 1, 5);
             PlayerPrefs.SetInt("room_code_index", codeIndex);
         }
         
         PlayerPrefs.SetInt("prev_combat_result", status ? 1 : 0);
         PlayerPrefs.SetInt("reset_player_post", 1);
+        _audioScript.PlayAudio(transform.GetComponent<AudioSource>(), "enter_combat");
         _sceneLoaderScript.LoadScene(PlayerPrefs.GetString("prev_scene"));
     }
 }

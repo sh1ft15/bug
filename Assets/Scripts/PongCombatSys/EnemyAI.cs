@@ -30,7 +30,7 @@ public class EnemyAI : MonoBehaviour
     }
 
     IEnumerator SimulateAction(){
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(Random.Range(1, 4));
         
         List<Tile> specialTiles = _gridManager.GeSpecialTiles(),
                    originTiles,
@@ -79,76 +79,3 @@ public class EnemyAI : MonoBehaviour
         _simulateActionCoroutine = null;
     }
 }
-
-
-
-// List<Tile> tiles = _gridManager.GetMainTiles(),
-//                    specialTiles = _gridManager.GeSpecialTiles(),
-//                    targetSpecialTiles,
-//                    tilesWithBall;
-//         Tile targetSpecialTile = null, targetTile = null;
-//         List<string> specials;
-//         bool hasAction = false;
-
-//         specialTiles = specialTiles.FindAll(t => !t.IsPath());
-//         tilesWithBall = tiles.FindAll(t => t.GetBallEntered() != null);
-
-//         if (tilesWithBall.Count > 0) {
-//             Ball ball = _ballManager.GetActiveBall();
-//             bool curEndIsMe, curEndIsPlayer;
-
-//             if (ball != null) {
-//                 List<Tile> ballPath = ball._tiles;
-
-//                 curEndIsMe = ball._endTile.Equals("End");
-//                 curEndIsPlayer = ball._endTile.Equals("Start");
-
-//                 // ball host is blue - will hurt enemy n heal player - get rid of it!
-//                 if (ball._hostName.Equals("Start") && (curEndIsMe || curEndIsPlayer)) {
-//                     specials = new List<string>{"swap", "destroy", "ghost"};
-//                 }
-//                 // ball host is red - heal enemy - do nothing or quicken the trip
-//                 else if (ball._hostName.Equals("End")) {
-//                     specials = new List<string>{"speedup"};
-//                 }
-//                 else { specials = new List<string>(); }
-
-//                 if (specials.Count > 0) {
-//                     // place special tile in front of approaching ball
-//                     ballPath = ballPath.FindAll(t => !_gridManager.IsSpecialTile(t) && !t.IsEndPoint() && ballPath.IndexOf(t) > ball._curIndex);
-//                     targetSpecialTiles = specialTiles.FindAll(s => specials.IndexOf(s.GetHost().name.ToLower()) != -1);
-
-//                     if (targetSpecialTiles.Count > 0 && ball._curIndex < (ballPath.Count - 1)) {
-//                         targetTile = ballPath[Random.Range(0, ballPath.Count)];
-//                         targetSpecialTile = targetSpecialTiles[Random.Range(0, targetSpecialTiles.Count)];
-//                         hasAction = true;
-//                         yield break;
-//                     }
-//                 }
-//             }                                                                                                                           
-            
-//         }
-//         // place random special tile on the path
-//         else {
-//             specials = new List<string>{"swap", "destroy", "reverse", "speedup", "slowdown", "ghost"};
-//             targetSpecialTiles = specialTiles.FindAll(s => specials.IndexOf(s.GetHost().name.ToLower()) != -1);
-//             tiles = tiles.FindAll(t => !_gridManager.IsSpecialTile(t) && !t.IsEndPoint());
-
-//             if (tiles.Count > 0) {
-//                 targetSpecialTile = targetSpecialTiles[Random.Range(0, targetSpecialTiles.Count)];
-//                 targetTile = tiles[Random.Range(0, tiles.Count)];
-//                 hasAction = true;
-//             }
-//         }
-
-        
-//         if (hasAction && targetTile != null && targetSpecialTile != null) { 
-//             if (targetTile.IsPath() && !_gridManager.IsSpecialTile(targetTile)) {
-//                 targetTile.SetHost(targetSpecialTile.GetHost());
-//                 _gridManager.AddSpecialTile(targetTile);
-//                 _gridManager.RemoveSpecialTile(targetSpecialTile);
-//             }
-//             else { _gridManager.MoveCurSpecialTileOnPath(); }
-//         }
-//         // skip turn if AI decide to do nothing
-//         else { _gridManager.MoveCurSpecialTileOnPath(); }

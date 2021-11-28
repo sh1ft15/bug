@@ -20,13 +20,16 @@ public class GridManager : MonoBehaviour {
     float _branchRate = 0f, _vertRate = 0f;
     BallManager _ballManager;
     UIManager _uiManager;
+    AudioScript _audioScript;
 
     void Start() {
+        _audioScript = GameObject.Find("/Audio").GetComponent<AudioScript>();
         _ballManager = GameObject.Find("/BallManager").GetComponent<BallManager>();
         _uiManager = GameObject.Find("/UIManager").GetComponent<UIManager>();
         _specialTilesOnPath = new Tile[_maxSpecialTilesOnPath];
         _specials = new List<string>{"swap", "destroy", "reverse", "speedup", "slowdown", "ghost"};
 
+        SetupChars();
         GenerateGrid();
         StartCoroutine(GenerateMainTrail());
     }
@@ -46,7 +49,7 @@ public class GridManager : MonoBehaviour {
             }
         }
 
-        _cam.transform.position = new Vector3((float) _width / 2 -.5f, (float)_height / 2 - 2f, -10);
+        _cam.transform.position = new Vector3((float) _width / 2 -.5f, (float)_height / 2 - 1.5f, -10);
     }
 
     IEnumerator GenerateMainTrail(){
@@ -133,9 +136,9 @@ public class GridManager : MonoBehaviour {
             _endTiles.Add(lastTile);
             lastTile.SetEndTileIndex(_endTiles.IndexOf(lastTile));
 
-            SetupChars();
+            _specialTiles = new List<Tile>();
+            _specialTileCoroutine = StartCoroutine(GenerateSpecialTiles(true));
         }
-        
     }
 
     // todo: animate path spawning
@@ -376,6 +379,8 @@ public class GridManager : MonoBehaviour {
             List<Tile> tiles;
             int index;
 
+            _audioScript.PlayAudio(transform.GetComponent<AudioSource>(), "ball_effected");
+
             switch(host.name.ToLower()){
                 case "swap":
                     SwapBallHost(ball);
@@ -412,14 +417,19 @@ public class GridManager : MonoBehaviour {
 
     void SetupChars(){
         List<string> specials = new List<string>();
+        int gridWidth = 0, gridHeight = 0;
 
         foreach(string side in new string[]{"start", "end"}) {
             string charObjName = PlayerPrefs.GetString(side + "_character");
             CharObj charObj = _characters.Find(c => c.name.Equals(charObjName));
 
-            _uiManager.SetChar(side, charObj);
-
             if (charObj != null) {
+                _uiManager.SetChar(side, charObj);
+                gridHeight += charObj.gridHeight;
+                gridWidth += charObj.gridWidth;
+
+
+
                 foreach(HostObj host in charObj.hosts) {
                     if (specials.IndexOf(host.name.ToLower()) == -1) {
                         specials.Add(host.name.ToLower());
@@ -428,8 +438,8 @@ public class GridManager : MonoBehaviour {
             }
         }
 
+        _width = gridWidth;
+        _height = gridHeight;
         _specials = specials;
-        _specialTiles = new List<Tile>();
-        _specialTileCoroutine = StartCoroutine(GenerateSpecialTiles(true));
     }
 }

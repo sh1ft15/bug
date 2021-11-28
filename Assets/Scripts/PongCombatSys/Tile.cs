@@ -31,7 +31,7 @@ public class Tile : MonoBehaviour {
     }
 
     void OnMouseEnter() {
-        if (!_uiManager.OnMouseHold()) {
+        if (_uiManager != null && !_uiManager.OnMouseHold()) {
             if (!_isPath) { _renderer.color = _offsetColor; }
 
             _renderer.transform.localScale = Vector2.one * 1.2f;
@@ -40,7 +40,7 @@ public class Tile : MonoBehaviour {
     }
 
     void OnMouseOver() {
-        if (_uiManager.OnMouseHold()) { OnMouseExit(); }
+        if (_uiManager != null && _uiManager.OnMouseHold()) { OnMouseExit(); }
         else { OnMouseEnter(); }
     }
 

@@ -8,9 +8,14 @@ public class SceneLoaderScript : MonoBehaviour
 
     void Start(){
         // clear player prefs on menu screen
-        if (GetSceneName().Equals("MenuScene") || GetSceneName().Equals("GameOverScene")){
+        if (GetSceneName().Equals("Menu") || GetSceneName().Equals("GameOver")){
             PlayerPrefs.DeleteAll();
         }
+    }
+
+    public void StartGame(){
+        PlayerPrefs.DeleteAll();
+        SceneManager.LoadScene("Hallway");
     }
 
     public IEnumerator TriggerScene(string sceneName){

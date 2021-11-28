@@ -5,45 +5,33 @@ using UnityEngine.UI;
 
 public class KeypadScript : MonoBehaviour
 {
-    [SerializeField] Text _keypadLabel, _keypadCode;
+    [SerializeField] Text _keypadLabel;
     SceneLoaderScript _sceneLoaderScript;
     PlayerScript _playerScript;
+    NotesScript _notesScript;
     bool _keypadIsShown;
     string _keypadText, _code, _targetRoom;
     int _codeIndex;
 
     void Start() { 
         _sceneLoaderScript = GameObject.Find("SceneLoader").GetComponent<SceneLoaderScript>();
+        _notesScript = GameObject.Find("/Canvas").transform.Find("Notes").GetComponent<NotesScript>();
         _playerScript = GameObject.Find("/Player").GetComponent<PlayerScript>();
-        ToggleKeypad(_keypadIsShown);
-
-        if (PlayerPrefs.HasKey("room_code")) {
-            _code = PlayerPrefs.GetString("room_code");
-            _codeIndex = PlayerPrefs.GetInt("room_code_index");
-        }
-        else {
-            string randomStr = "0123456789";
-
-            for (int i = 0; i < 10; i++) {
-                _code += randomStr[Random.Range(0, randomStr.Length)];
-            }
-
-            _codeIndex = 0;
-
-            PlayerPrefs.SetString("room_code", _code);
-            PlayerPrefs.SetInt("room_code_index", _codeIndex);
-        }
-
-        UpdateCodeHint();
+        ToggleKeypad(_keypadIsShown, true);
     }
 
-    public void ToggleKeypad(bool status) {
+    public void ToggleKeypad(bool status, bool init = false) {
         _keypadIsShown = status;
         _keypadText = "";
         _keypadLabel.text = "ENTER CODE";
         
         gameObject.SetActive(_keypadIsShown);
-        _playerScript.LockMovement(_keypadIsShown);
+
+        if (!init) { _playerScript.LockMovement(_keypadIsShown); }
+    }
+
+    public void CloseKeypad(){
+        ToggleKeypad(false);
     }
 
     public void AddKeypadCode(string text){
@@ -68,14 +56,16 @@ public class KeypadScript : MonoBehaviour
     }
 
     public void SubmitKeypadCode() {
-        Debug.Log(_keypadText + " = " + _code);
+        // Debug.Log(_keypadText + " = " + _code);
 
-        if (_keypadText.Equals(_code)) {
+        if (_notesScript.CheckCode(_keypadText)) {
             if (_sceneLoaderScript.GetSceneName().Equals("Hallway")) {
+                string sceneName = _sceneLoaderScript.GetSceneName();
+
                 PlayerPrefs.SetInt("reset_player_post", 0);
-                PlayerPrefs.SetString("prev_scene", _sceneLoaderScript.GetSceneName());
-                PlayerPrefs.SetFloat("prev_player_x", _playerScript.transform.position.x);
-                PlayerPrefs.SetFloat("prev_player_y", _playerScript.transform.position.y);
+                PlayerPrefs.SetString("prev_scene", sceneName);
+                PlayerPrefs.SetFloat(sceneName + "_prev_player_x", _playerScript.transform.position.x);
+                PlayerPrefs.SetFloat(sceneName + "_prev_player_y", _playerScript.transform.position.y);
             }
             else { PlayerPrefs.SetInt("reset_player_post", 1); }
 
@@ -109,16 +99,4 @@ public class KeypadScript : MonoBehaviour
     // public void SetCode(string code){
     //     _code = code;
     // }
-
-    public void UpdateCodeHint(){
-        if (_keypadCode.text != null) {
-            string fill = ""; 
-
-            if (_codeIndex <= _code.Length - 1) {
-                for (int i = 0; i < (_code.Length - _codeIndex); i++) { fill += "*"; }
-            }
-
-            _keypadCode.text = _code.Substring(0, _codeIndex) + fill;
-        }
-    }
 }
